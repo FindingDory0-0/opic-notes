@@ -368,6 +368,10 @@
         <button type="button" data-fz="1.15" aria-pressed="false">크게</button>
         <button type="button" data-fz="1.3" aria-pressed="false">아주 크게</button>
       </span>
+      <span class="seg-ctl wake-ctl" role="group" aria-label="화면 꺼짐 방지">
+        <button type="button" data-wake="0" aria-pressed="true">화면 자동 꺼짐</button>
+        <button type="button" data-wake="1" aria-pressed="false">화면 켜 두기</button>
+      </span>
     </div>
       <p class="tts-note" id="tts-note">질문과 영어 답변 옆의 ▶ 버튼을 누르면 미리 녹음된 미국 영어 음성이 나옵니다. Samantha(Mac 음성)와 Google(구글 음성) 두 가지 중 고를 수 있습니다. 음성은 처음 누를 때 받아서 저장하고, 저장된 음성은 인터넷 없이 재생됩니다. 아래 버튼으로 이 탭의 음성을 미리 한꺼번에 받아 둘 수도 있습니다. 음성이 아직 없는 항목은 버튼이 흐리게 표시됩니다.</p>
     </div>
@@ -1626,6 +1630,10 @@
         <button type="button" data-fz="1.15" aria-pressed="false">크게</button>
         <button type="button" data-fz="1.3" aria-pressed="false">아주 크게</button>
       </span>
+      <span class="seg-ctl wake-ctl" role="group" aria-label="화면 꺼짐 방지">
+        <button type="button" data-wake="0" aria-pressed="true">화면 자동 꺼짐</button>
+        <button type="button" data-wake="1" aria-pressed="false">화면 켜 두기</button>
+      </span>
     </div>
       <p class="tts-note">질문과 영어 답변 옆의 ▶ 버튼을 누르면 미국 영어 음성이 나옵니다(Samantha 또는 Google). 음성은 처음 누를 때 받아서 저장하고, 저장된 음성은 인터넷 없이 재생됩니다. 여기서 바꾼 옵션은 두 탭에 같이 적용됩니다.</p>
     </div>
@@ -2639,6 +2647,30 @@
   }
   fzBtns.forEach(function (b) { b.addEventListener('click', function () { setFz(parseFloat(b.getAttribute('data-fz'))); }); });
   setFz(parseFloat(store.get('opic.fz')) || 1);
+  // keep the screen on while studying (Screen Wake Lock API). The browser releases the lock whenever
+  // the page is hidden, so it is requested again when the page becomes visible.
+  var wakeBtns = document.querySelectorAll('[data-wake]');
+  var wakeOn = false, wakeLock = null;
+  function requestWake() {
+    if (!wakeOn || wakeLock || document.visibilityState !== 'visible') return;
+    navigator.wakeLock.request('screen').then(function (l) {
+      wakeLock = l;
+      l.addEventListener('release', function () { wakeLock = null; });
+    }).catch(function () {});
+  }
+  function setWake(on) {
+    wakeOn = on;
+    wakeBtns.forEach(function (b) { b.setAttribute('aria-pressed', String((b.getAttribute('data-wake') === '1') === on)); });
+    store.set('opic.wake', on ? '1' : '0');
+    if (on) requestWake(); else if (wakeLock) { wakeLock.release(); wakeLock = null; }
+  }
+  if ('wakeLock' in navigator) {
+    wakeBtns.forEach(function (b) { b.addEventListener('click', function () { setWake(b.getAttribute('data-wake') === '1'); }); });
+    document.addEventListener('visibilitychange', requestWake);
+    setWake(store.get('opic.wake') === '1');
+  } else {
+    document.querySelectorAll('.wake-ctl').forEach(function (c) { c.hidden = true; });
+  }
   function stopAudio() { player.pause(); player.currentTime = 0; if (current) { current.classList.remove('speaking'); current = null; } }
   player.addEventListener('ended', stopAudio);
   player.addEventListener('error', function () { stopAudio(); showAudioError(); });
