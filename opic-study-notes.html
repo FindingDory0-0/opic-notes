@@ -4,6 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>OPIc 준비 노트</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#F4F6F8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121820" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="OPIc 노트">
+<meta name="application-name" content="OPIc 노트">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@700;800&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
@@ -207,6 +216,24 @@
     .tts-note { font-size: 12px; }
   }
   @media print { .appbar, .toolbar { position: static; } .panel[hidden] { display: block; } .qa { break-inside: avoid; } body { background: #fff; } }
+
+  /* ---------- offline audio (PWA) ---------- */
+  .offline { display: grid; gap: 6px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); font-size: 13px; color: var(--ink-2); }
+  .offline[hidden] { display: none; }
+  .off-title { font-weight: 600; color: var(--ink); margin: 0 0 2px; font-size: 13px; }
+  .off-title small { font-weight: 400; color: var(--muted); margin-left: 6px; }
+  .off-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .off-label { color: var(--ink); min-width: 5.2em; }
+  .off-count { flex: 1 1 auto; font-variant-numeric: tabular-nums; }
+  .off-btn, .off-clear { appearance: none; font: inherit; font-size: 12.5px; border: 1px solid var(--line); background: var(--bg); color: var(--accent); border-radius: 6px; padding: 4px 10px; cursor: pointer; white-space: nowrap; }
+  .off-btn:disabled { color: var(--muted); cursor: default; }
+  .off-clear { color: var(--warn); }
+  .off-btn:focus-visible, .off-clear:focus-visible, .update-toast button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .off-foot { border-top: 1px dashed var(--line); padding-top: 6px; margin-top: 2px; }
+  .off-msg { color: var(--warn); }
+  .update-toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 50; display: flex; align-items: center; gap: 12px; max-width: calc(100% - 32px); padding: 10px 12px 10px 16px; border-radius: 10px; background: var(--ink); color: var(--bg); font-size: 14px; box-shadow: 0 6px 24px rgba(0,0,0,.18); }
+  .update-toast[hidden] { display: none; }
+  .update-toast button { appearance: none; font: inherit; font-size: 13.5px; font-weight: 600; border: 0; border-radius: 6px; padding: 6px 12px; background: var(--accent-soft); color: var(--accent); cursor: pointer; white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -339,7 +366,7 @@
         <button type="button" data-fz="1.3" aria-pressed="false">아주 크게</button>
       </span>
     </div>
-      <p class="tts-note" id="tts-note">질문과 영어 답변 옆의 ▶ 버튼을 누르면 미리 녹음된 미국 영어 음성이 나옵니다. Samantha(Mac 음성)와 Google(구글 음성) 두 가지 중 고를 수 있습니다. 음성은 버튼을 누를 때 받아 오므로 인터넷 연결이 필요하고, 한 번 들은 음성은 브라우저에 잠시 보관됩니다. 음성이 아직 없는 항목은 버튼이 흐리게 표시됩니다.</p>
+      <p class="tts-note" id="tts-note">질문과 영어 답변 옆의 ▶ 버튼을 누르면 미리 녹음된 미국 영어 음성이 나옵니다. Samantha(Mac 음성)와 Google(구글 음성) 두 가지 중 고를 수 있습니다. 음성은 처음 누를 때 받아서 저장하고, 저장된 음성은 인터넷 없이 재생됩니다. 아래 버튼으로 이 탭의 음성을 미리 한꺼번에 받아 둘 수도 있습니다. 음성이 아직 없는 항목은 버튼이 흐리게 표시됩니다.</p>
     </div>
   </div>
 
@@ -1593,7 +1620,7 @@
         <button type="button" data-fz="1.3" aria-pressed="false">아주 크게</button>
       </span>
     </div>
-      <p class="tts-note">질문과 영어 답변 옆의 ▶ 버튼을 누르면 미국 영어 음성이 나옵니다(Samantha 또는 Google). 음성은 버튼을 누를 때 받아 오므로 인터넷 연결이 필요합니다. 여기서 바꾼 옵션은 두 탭에 같이 적용됩니다.</p>
+      <p class="tts-note">질문과 영어 답변 옆의 ▶ 버튼을 누르면 미국 영어 음성이 나옵니다(Samantha 또는 Google). 음성은 처음 누를 때 받아서 저장하고, 저장된 음성은 인터넷 없이 재생됩니다. 여기서 바꾼 옵션은 두 탭에 같이 적용됩니다.</p>
     </div>
   </div>
 
@@ -2575,7 +2602,7 @@
   setFz(parseFloat(store.get('opic.fz')) || 1);
   function stopAudio() { player.pause(); player.currentTime = 0; if (current) { current.classList.remove('speaking'); current = null; } }
   player.addEventListener('ended', stopAudio);
-  player.addEventListener('error', function () { stopAudio(); var n = document.getElementById('tts-note'); if (n) n.textContent = '음성을 재생하지 못했습니다. 인터넷 연결을 확인하고 다시 눌러 주세요.'; });
+  player.addEventListener('error', function () { stopAudio(); showAudioError(); });
   document.querySelectorAll('.play').forEach(function (btn) {
     // IM2 cards reuse a clip from the IH tab through data-ref (-> data-qid). Cards with no clip yet stay disabled:
     // add data-src / data-src2 to a button to enable it.
@@ -2591,6 +2618,185 @@
     });
   });
   tabs.forEach(function (t) { t.addEventListener('click', stopAudio); });
+
+
+  // ---------- offline app (PWA): service worker, saved audio, update prompt ----------
+  var AUDIO_CACHE = 'opic-notes-audio';
+  var canOffline = ('serviceWorker' in navigator) && ('caches' in window) && location.protocol !== 'file:';
+
+  function toast(text, actionLabel, action) {
+    var t = document.querySelector('.update-toast');
+    if (!t) {
+      t = document.createElement('div'); t.className = 'update-toast'; t.setAttribute('role', 'status');
+      t.innerHTML = '<span></span><button type="button"></button>';
+      document.body.appendChild(t);
+    }
+    t.querySelector('span').textContent = text;
+    var b = t.querySelector('button');
+    b.hidden = !actionLabel; b.textContent = actionLabel || '';
+    b.onclick = function () { t.hidden = true; if (action) action(); };
+    t.hidden = false;
+    clearTimeout(t._timer);
+    if (!actionLabel) t._timer = setTimeout(function () { t.hidden = true; }, 4000);
+  }
+  function showAudioError() {
+    if (navigator.onLine === false) toast('이 음성은 아직 저장되지 않았습니다. 인터넷에 연결된 상태에서 한 번 재생하면 저장됩니다.');
+    else toast('음성을 재생하지 못했습니다. 잠시 후 다시 눌러 주세요.');
+  }
+
+  if (canOffline) {
+    navigator.serviceWorker.register('sw.js', { scope: './' }).catch(function () {});
+    var updateShown = false;
+    var offerUpdate = function () { if (updateShown) return; updateShown = true; toast('새 내용이 있습니다.', '새로고침', function () { location.reload(); }); };
+    navigator.serviceWorker.addEventListener('message', function (e) { if (e.data && e.data.type === 'page-updated') offerUpdate(); });
+    // the background check can finish before this page is ready to hear about it, so also read the marker it leaves
+    var loadedAt = (performance.timeOrigin || Date.now());
+    var checkMarker = function () {
+      caches.open('opic-notes-shell-v1').then(function (c) { return c.match(new URL('__page-updated-at', location.href).href); })
+        .then(function (r) { return r ? r.text() : null; })
+        .then(function (t) { if (t && parseInt(t, 10) > loadedAt) offerUpdate(); }).catch(function () {});
+    };
+    [500, 3000, 10000].forEach(function (ms) { setTimeout(checkMarker, ms); });
+    // keep the typefaces offline: re-request the font files once the service worker controls the page
+    var warmFonts = function () {
+      if (!performance.getEntriesByType) return;
+      performance.getEntriesByType('resource').forEach(function (e) {
+        if (/^https:\/\/fonts\.(googleapis|gstatic)\.com\//.test(e.name)) fetch(e.name, { mode: 'cors', credentials: 'omit' }).catch(function () {});
+      });
+    };
+    if (navigator.serviceWorker.controller) window.addEventListener('load', warmFonts);
+    else navigator.serviceWorker.addEventListener('controllerchange', warmFonts);
+  }
+
+  // clips used by a study tab, for the voice currently selected (IM2 cards may borrow IH clips via data-ref)
+  function clipsFor(panel, kind) {
+    var set = {};
+    panel.querySelectorAll('.play').forEach(function (btn) {
+      var ref = btn.getAttribute('data-ref');
+      var srcBtn = ref ? document.querySelector('.play[data-qid="' + ref + '"]') : btn;
+      if (!srcBtn) return;
+      var src = srcBtn.getAttribute(voiceKey) || srcBtn.getAttribute('data-src');
+      if (!src) return;
+      var isAnswer = /(^|\/)a-[^\/]+\.mp3$/.test(src);
+      if ((kind === 'a') !== isAnswer) return;
+      set[new URL(src, location.href).href] = true;
+    });
+    return Object.keys(set);
+  }
+  function fmtMB(bytes) { return bytes >= 1048576 ? (bytes / 1048576).toFixed(1) + 'MB' : Math.max(1, Math.round(bytes / 1024)) + 'KB'; }
+
+  var offlineBlocks = [];
+  var jobs = {}; // panelId:kind -> { abort, done, total }
+  function voiceName() { return voiceKey === 'data-src2' ? 'Google' : 'Samantha'; }
+
+  function buildOffline(panel) {
+    var tools = panel.querySelector('.tools'); if (!tools) return;
+    var box = document.createElement('div'); box.className = 'offline';
+    box.innerHTML =
+      '<p class="off-title">오프라인 저장<small></small></p>' +
+      '<div class="off-row"><span class="off-label">질문 음성</span><span class="off-count" data-kind="q">확인 중…</span><button type="button" class="off-btn" data-kind="q">받기</button></div>' +
+      '<div class="off-row"><span class="off-label">답변 음성</span><span class="off-count" data-kind="a">확인 중…</span><button type="button" class="off-btn" data-kind="a">받기</button></div>' +
+      '<div class="off-row off-foot"><span class="off-count off-usage">사용 중 용량 확인 중…</span><button type="button" class="off-clear">저장된 음성 모두 삭제</button></div>' +
+      '<div class="off-row off-msg" hidden></div>';
+    var note = tools.querySelector('.tts-note');
+    tools.insertBefore(box, note || null);
+    box.querySelectorAll('.off-btn').forEach(function (b) {
+      b.addEventListener('click', function () { toggleDownload(panel, b.getAttribute('data-kind')); });
+    });
+    var clear = box.querySelector('.off-clear'), armed = null;
+    clear.addEventListener('click', function () {
+      if (!armed) {
+        clear.textContent = '한 번 더 누르면 삭제';
+        armed = setTimeout(function () { armed = null; clear.textContent = '저장된 음성 모두 삭제'; }, 3000);
+        return;
+      }
+      clearTimeout(armed); armed = null; clear.textContent = '저장된 음성 모두 삭제';
+      Object.keys(jobs).forEach(function (k) { jobs[k].abort = true; });
+      caches.delete(AUDIO_CACHE).then(refreshOffline);
+    });
+    offlineBlocks.push({ panel: panel, box: box });
+  }
+
+  function setMsg(box, text) { var m = box.querySelector('.off-msg'); m.textContent = text || ''; m.hidden = !text; }
+
+  function refreshOffline() {
+    if (!offlineBlocks.length) return;
+    caches.open(AUDIO_CACHE).then(function (cache) {
+      return cache.keys().then(function (reqs) {
+        var saved = {}; reqs.forEach(function (r) { saved[r.url] = true; });
+        offlineBlocks.forEach(function (o) {
+          o.box.querySelector('.off-title small').textContent = '현재 목소리(' + voiceName() + ') 기준';
+          ['q', 'a'].forEach(function (kind) {
+            var list = clipsFor(o.panel, kind), have = 0;
+            list.forEach(function (u) { if (saved[u]) have++; });
+            var job = jobs[o.panel.id + ':' + kind];
+            var count = o.box.querySelector('.off-count[data-kind="' + kind + '"]');
+            var btn = o.box.querySelector('.off-btn[data-kind="' + kind + '"]');
+            if (job && !job.abort) {
+              count.textContent = '받는 중 ' + job.done + ' / ' + job.total;
+              btn.disabled = false; btn.textContent = '중지';
+            } else {
+              count.textContent = list.length ? have + ' / ' + list.length + ' 저장됨' : '음성 없음';
+              btn.disabled = !list.length || have === list.length;
+              btn.textContent = have === list.length && list.length ? '모두 저장됨' : (have ? '나머지 받기' : '받기');
+            }
+          });
+        });
+      });
+    }).then(function () {
+      if (!navigator.storage || !navigator.storage.estimate) return;
+      return navigator.storage.estimate().then(function (est) {
+        offlineBlocks.forEach(function (o) { o.box.querySelector('.off-usage').textContent = '이 앱이 쓰는 저장 공간 약 ' + fmtMB(est.usage || 0); });
+      });
+    }).catch(function () {});
+  }
+
+  function toggleDownload(panel, kind) {
+    var key = panel.id + ':' + kind;
+    if (jobs[key] && !jobs[key].abort) { jobs[key].abort = true; return; }
+    var block = offlineBlocks.filter(function (o) { return o.panel === panel; })[0];
+    if (navigator.onLine === false) { setMsg(block.box, '인터넷에 연결된 상태에서 받을 수 있습니다.'); return; }
+    setMsg(block.box, '');
+    var list = clipsFor(panel, kind);
+    var job = jobs[key] = { abort: false, done: 0, total: list.length, failed: 0 };
+    var i = 0, lastPaint = 0;
+    caches.open(AUDIO_CACHE).then(function (cache) {
+      function next() {
+        if (job.abort || i >= list.length) return Promise.resolve();
+        var url = list[i++];
+        return cache.match(url).then(function (hit) {
+          if (hit) return;
+          return fetch(url).then(function (r) {
+            if (!r.ok) { job.failed++; return; }
+            return cache.match(url).then(function (h2) { if (!h2) return cache.put(url, r); });
+          });
+        }).catch(function () { job.failed++; }).then(function () {
+          job.done++;
+          var now = Date.now(); if (now - lastPaint > 250) { lastPaint = now; refreshOffline(); }
+          return next();
+        });
+      }
+      return Promise.all([next(), next(), next(), next()]);
+    }).then(function () {
+      var stopped = job.abort;
+      delete jobs[key];
+      if (job.failed) setMsg(block.box, job.failed + '개를 받지 못했습니다. 연결을 확인하고 다시 눌러 주세요.');
+      else if (!stopped) setMsg(block.box, '');
+      refreshOffline();
+    });
+    refreshOffline();
+  }
+
+  if (canOffline) {
+    studyPanels.forEach(buildOffline);
+    refreshOffline();
+    voiceBtns.forEach(function (b) { b.addEventListener('click', refreshOffline); });
+    toolsToggles.forEach(function (b) { b.addEventListener('click', refreshOffline); });
+    tabs.forEach(function (t) { t.addEventListener('click', refreshOffline); });
+    // a clip played for the first time is saved by the service worker; update the counts after playback
+    player.addEventListener('playing', function () { setTimeout(refreshOffline, 600); });
+    window.addEventListener('online', function () { offlineBlocks.forEach(function (o) { setMsg(o.box, ''); }); });
+  }
 
   // highlight current topic chip (in whichever study tab is open) and keep it visible in the strip
   function syncChip() {

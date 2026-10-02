@@ -1,0 +1,19 @@
+{
+  "id": "./",
+  "name": "OPIc 노트",
+  "short_name": "OPIc 노트",
+  "description": "OPIc 영어 시험 분석과 국룰 조합 예상답변, 질문·답변 음성",
+  "lang": "ko",
+  "dir": "ltr",
+  "start_url": "./opic-study-notes.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#F4F6F8",
+  "theme_color": "#F4F6F8",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
