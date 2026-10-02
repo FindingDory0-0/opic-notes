@@ -7,7 +7,7 @@
  * - Google Fonts: cached the first time they are used, so the page keeps its typefaces offline.
  * No persistent-storage request: if the browser clears the cache, clips are fetched again on play.
  */
-const SHELL = 'opic-notes-shell-v2'; // v2: manifest no longer forces 'any' orientation
+const SHELL = 'opic-notes-shell-v3'; // v3: practice mode rework (3-way, works with language view)
 const AUDIO = 'opic-notes-audio';      // unversioned on purpose: survives app updates
 const FONTS = 'opic-notes-fonts-v1';
 const KEEP = [SHELL, AUDIO, FONTS];

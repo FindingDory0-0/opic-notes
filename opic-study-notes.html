@@ -194,10 +194,13 @@
   /* language view */
   .panel[data-lang="en"] .qa .a:not(.en-a) { display: none; }
   .panel[data-lang="ko"] .qa .a.en-a { display: none; }
-  /* practice mode: hide answers until revealed */
-  .panel.practice .qa .a, .panel.practice .qa .keys { display: none; }
-  .panel.practice .qa.open .a, .panel.practice .qa.open .keys { display: block; }
-  .panel.practice .qa.open[data-lang] .a { display: block; }
+  /* practice mode: only cards that are not yet revealed hide anything, so the language view keeps working.
+     .practice hides every answer; .practice-ko hides only the Korean answer (English stays visible). */
+  .panel.practice .qa:not(.open) .a, .panel.practice .qa:not(.open) .keys { display: none; }
+  .panel.practice-ko .qa:not(.open) .a:not(.en-a) { display: none; }
+  .panel.practice-ko .qa:not(.open) .reveal { display: block; }
+  .panel.practice-ko[data-lang="en"] .qa .reveal { display: none; }
+  .panel.practice-ko .qa .a.en-a + .keys { border-top: 1px solid var(--line); }
   .reveal { display: none; margin: 0; padding: 10px 18px; font: inherit; font-size: calc(13.5px * var(--fz, 1)); color: var(--accent); background: transparent; border: 0; cursor: pointer; text-align: left; width: 100%; }
   .reveal:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
   .panel.practice .qa:not(.open) .reveal { display: block; }
@@ -345,7 +348,11 @@
         <button type="button" data-lang="en" aria-pressed="false">영어만</button>
         <button type="button" data-lang="ko" aria-pressed="false">한국어만</button>
       </span>
-      <label><input type="checkbox" id="practice"> 연습 모드 (질문만 보고, 답변은 눌러서 확인)</label>
+      <span class="seg-ctl" role="group" aria-label="연습 모드">
+        <button type="button" data-practice="0" aria-pressed="true">연습 끄기</button>
+        <button type="button" data-practice="1" aria-pressed="false">답변 숨기기</button>
+        <button type="button" data-practice="2" aria-pressed="false">한국어만 숨기기</button>
+      </span>
       <span class="seg-ctl" role="group" aria-label="목소리">
         <button type="button" data-voice="1" aria-pressed="true">Samantha</button>
         <button type="button" data-voice="2" aria-pressed="false">Google</button>
@@ -1599,7 +1606,11 @@
         <button type="button" data-lang="en" aria-pressed="false">영어만</button>
         <button type="button" data-lang="ko" aria-pressed="false">한국어만</button>
       </span>
-      <label><input type="checkbox" id="practice-im2"> 연습 모드 (질문만 보고, 답변은 눌러서 확인)</label>
+      <span class="seg-ctl" role="group" aria-label="연습 모드">
+        <button type="button" data-practice="0" aria-pressed="true">연습 끄기</button>
+        <button type="button" data-practice="1" aria-pressed="false">답변 숨기기</button>
+        <button type="button" data-practice="2" aria-pressed="false">한국어만 숨기기</button>
+      </span>
       <span class="seg-ctl" role="group" aria-label="목소리">
         <button type="button" data-voice="1" aria-pressed="true">Samantha</button>
         <button type="button" data-voice="2" aria-pressed="false">Google</button>
@@ -2578,18 +2589,21 @@
   langBtns.forEach(function (b) { b.addEventListener('click', function () { setLang(b.getAttribute('data-lang')); }); });
   setLang(store.get('opic.lang') || 'both');
 
-  // practice mode
-  var practiceBoxes = document.querySelectorAll('.modes input[type="checkbox"]');
-  function setPractice(on) {
-    practiceBoxes.forEach(function (c) { c.checked = on; });
+  // practice mode: 0 = off, 1 = hide answers until revealed, 2 = hide only the Korean answer
+  var practiceBtns = document.querySelectorAll('[data-practice]');
+  function setPractice(mode) {
+    mode = String(mode === '1' || mode === '2' ? mode : '0');
+    practiceBtns.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-practice') === mode)); });
     studyPanels.forEach(function (p) {
-      p.classList.toggle('practice', on);
-      if (!on) p.querySelectorAll('.qa.open').forEach(function (c) { c.classList.remove('open'); });
+      p.classList.toggle('practice', mode === '1');
+      p.classList.toggle('practice-ko', mode === '2');
+      p.querySelectorAll('.qa.open').forEach(function (c) { c.classList.remove('open'); });
+      p.querySelectorAll('.reveal').forEach(function (r) { r.textContent = mode === '2' ? '한국어 답변 보기 ↓' : '답변 보기 ↓'; });
     });
-    store.set('opic.practice', on ? '1' : '0');
+    store.set('opic.practice', mode);
   }
-  practiceBoxes.forEach(function (c) { c.addEventListener('change', function () { setPractice(c.checked); }); });
-  setPractice(store.get('opic.practice') === '1');
+  practiceBtns.forEach(function (b) { b.addEventListener('click', function () { setPractice(b.getAttribute('data-practice')); }); });
+  setPractice(store.get('opic.practice'));
   document.querySelectorAll('.reveal').forEach(function (btn) {
     btn.addEventListener('click', function () { btn.closest('.qa').classList.add('open'); });
   });
