@@ -41,11 +41,11 @@
   html { scroll-behavior: smooth; }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
   body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: calc(16px * var(--fz, 1)); line-height: 1.75; word-break: keep-all; }
-  .page { max-width: 820px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 80px; }
+  .page { max-width: none; margin: 0 auto; padding-inline: clamp(20px, 3vw, 48px); padding-block: 28px 80px; }
 
   /* ---------- app bar ---------- */
   .appbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--bar); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
-  .appbar-in { max-width: 820px; margin: 0 auto; padding: 10px 20px; display: flex; align-items: center; gap: 12px; flex-wrap: nowrap; }
+  .appbar-in { max-width: none; margin: 0 auto; padding: 10px clamp(20px, 3vw, 48px); display: flex; align-items: center; gap: 12px; flex-wrap: nowrap; }
   .brand { font-family: var(--font-display); font-weight: 800; font-size: 18px; letter-spacing: -.01em; margin-right: auto; white-space: nowrap; min-width: 0; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
   .brand small { display: block; font-family: var(--font-mono); font-weight: 500; font-size: 10.5px; letter-spacing: .12em; color: var(--accent); text-transform: uppercase; }
   .tabs { display: inline-flex; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px; gap: 2px; }
@@ -191,6 +191,17 @@
   .qa .a.en-a .lbl { margin-right: 44px; }
   .play.play-a { position: absolute; top: 7px; right: 14px; width: 30px; height: 30px; margin: 0; }
   .play.play-a svg { width: 13px; height: 13px; }
+  /* wide screens: use the full width. Text blocks drop their reading-width caps, and in the
+     한·영 view the Korean and English answers sit side by side so lines stay a readable length. */
+  @media (min-width: 900px) {
+    .lede, p, ul li, .callout, .persona, .tip, .frame, .survey { max-width: none; }
+    .toolbar { margin-inline: calc(-1 * clamp(20px, 3vw, 48px)); padding-inline: clamp(20px, 3vw, 48px); }
+    .panel[data-lang="both"] .qa { display: grid; grid-template-columns: 1fr 1fr; }
+    .panel[data-lang="both"] .qa > * { grid-column: 1 / -1; }
+    .panel[data-lang="both"] .qa > .a { grid-column: auto; }
+    .panel[data-lang="both"] .qa .a + .a { border-top: 0; border-left: 1px dashed var(--line); }
+    .panel[data-lang="both"].practice-ko .qa:not(.open) > .a.en-a { grid-column: 1 / -1; border-left: 0; }
+  }
   /* language view */
   .panel[data-lang="en"] .qa .a:not(.en-a) { display: none; }
   .panel[data-lang="ko"] .qa .a.en-a { display: none; }
