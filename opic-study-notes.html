@@ -202,6 +202,43 @@
     .panel[data-lang="both"] .qa .a + .a { border-top: 0; border-left: 1px dashed var(--line); }
     .panel[data-lang="both"].practice-ko .qa:not(.open) > .a.en-a { grid-column: 1 / -1; border-left: 0; }
   }
+  /* search */
+  .search-toggle { flex: 0 0 auto; appearance: none; font: inherit; font-size: 12.5px; color: var(--ink-2); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; cursor: pointer; white-space: nowrap; }
+  .toolbar.search-open .search-toggle { border-color: var(--accent); color: var(--accent); }
+  .searchbar { display: none; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .toolbar.search-open .searchbar { display: flex; }
+  .searchbar input { flex: 1 1 220px; min-width: 0; font: inherit; font-size: 15px; padding: 7px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); }
+  .searchbar input:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: var(--accent); }
+  .search-count { font-size: 13px; color: var(--ink-2); white-space: nowrap; }
+  .search-clear, .edit-sum button { appearance: none; font: inherit; font-size: 12.5px; color: var(--ink-2); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 5px 10px; cursor: pointer; }
+  .edit-sum button:disabled { opacity: .4; cursor: default; }
+  .edit-sum button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+  .panel.search-on > :not(.toolbar):not(.hit):not(.hit-sec) { display: none; }
+  ::highlight(opic-search) { background: #ffe066; color: #1a2430; }
+  /* English-answer edits */
+  .edit-sum { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-2); }
+  .edit-sum .edit-msg { flex-basis: 100%; margin: 0; font-size: 12.5px; color: var(--accent); }
+  .edit-sum .edit-msg:empty, .edit-sum .edit-err:empty { display: none; }
+  .edit-sum .edit-err { flex-basis: 100%; margin: 0; font-size: 12.5px; color: var(--warn); }
+  .gh-form { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .gh-form[hidden] { display: none; }
+  .gh-form input { flex: 1 1 240px; min-width: 0; font: inherit; font-size: 14px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--ink); }
+  .gh-form details { flex-basis: 100%; font-size: 13px; color: var(--ink-2); }
+  .gh-form details summary { cursor: pointer; color: var(--accent); }
+  .gh-form details ol { margin: 8px 0; padding-left: 20px; display: grid; gap: 4px; }
+  .gh-form details p { margin: 4px 0 0; font-size: 12.5px; }
+  .edit-export { flex-basis: 100%; width: 100%; font: 12.5px/1.5 var(--font-mono); padding: 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--ink); }
+  .edit-btn { display: inline-block; margin-top: 10px; appearance: none; font: inherit; font-size: 12.5px; color: var(--ink-2); background: transparent; border: 1px dashed var(--line); border-radius: 6px; padding: 3px 10px; cursor: pointer; }
+  .edit-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .qa.editing .edit-btn { display: none; }
+  .edit-box textarea { width: 100%; font: inherit; font-size: calc(16px * var(--fz, 1)); line-height: 1.7; padding: 10px 12px; border: 1px solid var(--accent); border-radius: 8px; background: var(--surface); color: var(--ink); resize: vertical; }
+  .edit-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .edit-actions button { appearance: none; font: inherit; font-size: 13px; border: 1px solid var(--line); border-radius: 6px; padding: 5px 14px; cursor: pointer; background: var(--surface); color: var(--ink-2); }
+  .edit-actions .edit-save { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .edit-actions .edit-reset { margin-left: auto; color: var(--warn); }
+  .qa.edited { border-color: var(--warn); }
+  .qa .edit-badge { margin: 0 0 8px !important; font-size: calc(12.5px * var(--fz, 1)) !important; line-height: 1.5 !important; color: var(--warn); background: var(--warn-soft); border-radius: 4px; padding: 4px 8px; }
+  .qa .edit-note { margin: 8px 0 0 !important; font-size: calc(12.5px * var(--fz, 1)) !important; color: var(--warn); }
   /* language view */
   .panel[data-lang="en"] .qa .a:not(.en-a) { display: none; }
   .panel[data-lang="ko"] .qa .a.en-a { display: none; }
@@ -350,7 +387,13 @@
   <div class="toolbar" id="toolbar">
     <div class="toolbar-row">
       <nav class="chips" aria-label="주제 이동"><a href="#survey">00 준비</a><a href="#intro">01 자기소개</a><a href="#home">02 집</a><a href="#movie">03 영화</a><a href="#park">04 공원</a><a href="#music">05 음악</a><a href="#jog">06 조깅·걷기</a><a href="#domestic">07 국내여행</a><a href="#overseas">08 해외여행</a><a href="#staycation">09 집 휴가</a><a href="#shopping">10 쇼핑</a><a href="#concert">11 공연·콘서트</a><a href="#roleplay">12 롤플레이</a><a href="#advanced">13 14·15번</a><a href="#sudden">14 돌발</a></nav>
+      <button type="button" class="search-toggle" aria-expanded="false">검색</button>
       <button type="button" class="tools-toggle" id="tools-toggle" aria-expanded="false" aria-controls="tools">옵션</button>
+    </div>
+    <div class="searchbar">
+      <input type="search" placeholder="단어 검색 (한국어·영어, 질문·답변)" autocomplete="off" aria-label="단어 검색">
+      <span class="search-count" aria-live="polite"></span>
+      <button type="button" class="search-clear">지우기</button>
     </div>
     <div class="tools" id="tools">
       <div class="modes">
@@ -384,6 +427,31 @@
         <button type="button" data-wake="1" aria-pressed="false">화면 켜 두기</button>
       </span>
     </div>
+      <div class="edit-sum">
+        <span class="edit-sum-count"></span>
+        <button type="button" class="edit-only" aria-pressed="false">수정한 것만 보기</button>
+        <button type="button" class="edit-copy">수정 목록 복사</button>
+        <button type="button" class="gh-connect">GitHub 연결</button>
+        <button type="button" class="gh-disconnect" hidden>GitHub 연결 해제</button>
+        <p class="edit-err" aria-live="polite"></p>
+        <p class="edit-msg" aria-live="polite"></p>
+        <div class="gh-form" hidden>
+          <input type="password" placeholder="github_pat_로 시작하는 토큰 붙여 넣기" autocomplete="off" aria-label="GitHub 토큰">
+          <button type="button" class="gh-save">연결</button>
+          <button type="button" class="gh-cancel">취소</button>
+          <details>
+            <summary>토큰 만드는 방법 (한 번만)</summary>
+            <ol>
+              <li>이 기기에서 GitHub에 로그인한 뒤 <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">새 토큰 만들기</a>를 엽니다. (Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token)</li>
+              <li>Token name: 아무 이름(예: opic-notes 수정). Expiration: 시험일 이후 날짜.</li>
+              <li>Repository access: <strong>Only select repositories</strong> → <strong>opic-notes</strong>만 선택합니다.</li>
+              <li>Permissions → Repository permissions → <strong>Contents</strong>를 <strong>Read and write</strong>로 바꿉니다. 다른 권한은 건드리지 않습니다.</li>
+              <li>Generate token을 누르고, 나온 토큰(github_pat_…)을 복사해 위 칸에 붙여 넣고 "연결"을 누릅니다.</li>
+            </ol>
+            <p>토큰은 이 브라우저에만 저장되고 GitHub 외에는 보내지 않습니다. 이 저장소의 파일 쓰기만 할 수 있어서 다른 저장소나 계정에는 영향이 없습니다. 기기를 다른 사람과 같이 쓰면 다 쓴 뒤 "GitHub 연결 해제"를 눌러 주세요.</p>
+          </details>
+        </div>
+      </div>
       <p class="tts-note" id="tts-note">질문과 영어 답변 옆의 ▶ 버튼을 누르면 미리 녹음된 미국 영어 음성이 나옵니다. Samantha(Mac 음성)와 Google(구글 음성) 두 가지 중 고를 수 있습니다. 음성은 처음 누를 때 받아서 저장하고, 저장된 음성은 인터넷 없이 재생됩니다. 아래 버튼으로 이 탭의 음성을 미리 한꺼번에 받아 둘 수도 있습니다. 음성이 아직 없는 항목은 버튼이 흐리게 표시됩니다.</p>
     </div>
   </div>
@@ -1612,7 +1680,13 @@
   <div class="toolbar" id="toolbar-im2">
     <div class="toolbar-row">
       <nav class="chips" aria-label="IM2 주제 이동"><a href="#m-start">00 먼저 읽기</a><a href="#m-intro">01 자기소개</a><a href="#m-home">02 집</a><a href="#m-movie">03 영화</a><a href="#m-park">04 공원</a><a href="#m-music">05 음악</a><a href="#m-jog">06 조깅·걷기</a><a href="#m-domestic">07 국내여행</a><a href="#m-overseas">08 해외여행</a><a href="#m-staycation">09 집 휴가</a><a href="#m-shopping">10 쇼핑</a><a href="#m-concert">11 공연·콘서트</a><a href="#m-roleplay">12 상황극</a><a href="#m-ava">13 Ava에게 질문</a><a href="#m-sudden">14 돌발</a></nav>
+      <button type="button" class="search-toggle" aria-expanded="false">검색</button>
       <button type="button" class="tools-toggle" id="tools-toggle-im2" aria-expanded="false" aria-controls="tools-im2">옵션</button>
+    </div>
+    <div class="searchbar">
+      <input type="search" placeholder="단어 검색 (한국어·영어, 질문·답변)" autocomplete="off" aria-label="단어 검색">
+      <span class="search-count" aria-live="polite"></span>
+      <button type="button" class="search-clear">지우기</button>
     </div>
     <div class="tools" id="tools-im2">
       <div class="modes">
@@ -1646,6 +1720,31 @@
         <button type="button" data-wake="1" aria-pressed="false">화면 켜 두기</button>
       </span>
     </div>
+      <div class="edit-sum">
+        <span class="edit-sum-count"></span>
+        <button type="button" class="edit-only" aria-pressed="false">수정한 것만 보기</button>
+        <button type="button" class="edit-copy">수정 목록 복사</button>
+        <button type="button" class="gh-connect">GitHub 연결</button>
+        <button type="button" class="gh-disconnect" hidden>GitHub 연결 해제</button>
+        <p class="edit-err" aria-live="polite"></p>
+        <p class="edit-msg" aria-live="polite"></p>
+        <div class="gh-form" hidden>
+          <input type="password" placeholder="github_pat_로 시작하는 토큰 붙여 넣기" autocomplete="off" aria-label="GitHub 토큰">
+          <button type="button" class="gh-save">연결</button>
+          <button type="button" class="gh-cancel">취소</button>
+          <details>
+            <summary>토큰 만드는 방법 (한 번만)</summary>
+            <ol>
+              <li>이 기기에서 GitHub에 로그인한 뒤 <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">새 토큰 만들기</a>를 엽니다. (Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token)</li>
+              <li>Token name: 아무 이름(예: opic-notes 수정). Expiration: 시험일 이후 날짜.</li>
+              <li>Repository access: <strong>Only select repositories</strong> → <strong>opic-notes</strong>만 선택합니다.</li>
+              <li>Permissions → Repository permissions → <strong>Contents</strong>를 <strong>Read and write</strong>로 바꿉니다. 다른 권한은 건드리지 않습니다.</li>
+              <li>Generate token을 누르고, 나온 토큰(github_pat_…)을 복사해 위 칸에 붙여 넣고 "연결"을 누릅니다.</li>
+            </ol>
+            <p>토큰은 이 브라우저에만 저장되고 GitHub 외에는 보내지 않습니다. 이 저장소의 파일 쓰기만 할 수 있어서 다른 저장소나 계정에는 영향이 없습니다. 기기를 다른 사람과 같이 쓰면 다 쓴 뒤 "GitHub 연결 해제"를 눌러 주세요.</p>
+          </details>
+        </div>
+      </div>
       <p class="tts-note">질문과 영어 답변 옆의 ▶ 버튼을 누르면 미국 영어 음성이 나옵니다(Samantha 또는 Google). 음성은 처음 누를 때 받아서 저장하고, 저장된 음성은 인터넷 없이 재생됩니다. 여기서 바꾼 옵션은 두 탭에 같이 적용됩니다.</p>
     </div>
   </div>
@@ -2896,6 +2995,326 @@
   }
   window.addEventListener('scroll', syncChip, { passive: true });
   syncChip();
+
+  /* ================= word search and English-answer edits (both study tabs) ================= */
+  function norm(t) { return String(t || '').replace(/\s+/g, ' ').trim(); }
+  function hashStr(t) { var h = 5381; for (var i = 0; i < t.length; i++) h = ((h << 5) + h + t.charCodeAt(i)) | 0; return (h >>> 0).toString(36); }
+  function cardsOf(p) { return Array.prototype.slice.call(p.querySelectorAll(':scope > .qa')); }
+
+  // stable card ids: panel + question text (+ occurrence when a question repeats in the same panel)
+  studyPanels.forEach(function (p) {
+    var seen = {};
+    cardsOf(p).forEach(function (c) {
+      var q = c.querySelector('.q .en'), h = hashStr(norm(q ? q.textContent : ''));
+      seen[h] = (seen[h] || 0) + 1;
+      c.dataset.cid = p.id + ':' + h + ':' + seen[h];
+      var enP = c.querySelector('.a.en-a > p:not(.lbl)');
+      if (enP) { enP.classList.add('en-text'); c._origHTML = enP.innerHTML; c._origText = norm(enP.textContent); }
+    });
+  });
+
+  // ---- edits: shared through edits.json in the GitHub repository ----
+  // Without a token, edits stay in this browser (pending). With a token (fine-grained, this repo only,
+  // Contents read/write) every save is merged into the latest edits.json and committed, so all devices
+  // see it. Conflicting saves from two devices are retried on top of the newer file, never overwritten.
+  var GH_OWNER = 'FindingDory0-0', GH_REPO = 'opic-notes';
+  var GH_FILE = 'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/edits.json';
+  var K_REMOTE = 'opic.edits.remote', K_PENDING = 'opic.edits.pending', K_TOKEN = 'opic.gh.token';
+  function jget(k, d) { try { var v = JSON.parse(store.get(k) || 'null'); return v == null ? d : v; } catch (e) { return d; } }
+  var remote = jget(K_REMOTE, {}), pending = jget(K_PENDING, []), edits = {};
+  var syncing = false, syncErr = '', lastPull = 0;
+  function token() { return store.get(K_TOKEN) || ''; }
+  function persist() { store.set(K_REMOTE, JSON.stringify(remote)); store.set(K_PENDING, JSON.stringify(pending)); }
+  function rebuild() {
+    edits = {};
+    Object.keys(remote).forEach(function (k) { edits[k] = remote[k]; });
+    pending.forEach(function (o) { if (o.op === 'set') edits[o.cid] = o.data; else delete edits[o.cid]; });
+  }
+  function b64dec(s) {
+    var bin = atob(String(s).replace(/\s/g, '')), bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+  function b64enc(str) {
+    var bytes = new TextEncoder().encode(str), bin = '';
+    for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    return btoa(bin);
+  }
+  function ghHeaders(tok) {
+    var h = { 'Accept': 'application/vnd.github+json' };
+    if (tok) h.Authorization = 'Bearer ' + tok;
+    return h;
+  }
+  function ghGet() {
+    return fetch(GH_FILE + '?ref=main', { headers: ghHeaders(token()), cache: 'no-store' }).then(function (r) {
+      if (r.status === 404) return { sha: null, edits: {} };
+      if (!r.ok) throw { status: r.status };
+      return r.json().then(function (j) { var d = JSON.parse(b64dec(j.content) || '{}'); return { sha: j.sha, edits: (d && d.edits) || {} }; });
+    });
+  }
+  function ghPut(map, sha, message) {
+    var body = { message: message, branch: 'main', content: b64enc(JSON.stringify({
+      note: 'OPIc 노트 페이지에서 고친 영어 답변. 한국어 답변과 음성을 적용하면 해당 항목을 지웁니다.', edits: map }, null, 1) + '\n') };
+    if (sha) body.sha = sha;
+    return fetch(GH_FILE, { method: 'PUT', headers: ghHeaders(token()), body: JSON.stringify(body) }).then(function (r) {
+      if (!r.ok) throw { status: r.status };
+    });
+  }
+  function commitMessage(ops) {
+    var parts = ops.map(function (o) { return o.op === 'set' ? (o.data.sec || o.cid) : '되돌림 ' + o.cid; });
+    var m = '페이지에서 영어 답변 수정: ' + parts.join(', ');
+    return m.length > 200 ? m.slice(0, 197) + '...' : m;
+  }
+  function sync() {
+    if (syncing) return;
+    syncing = true; setStatus();
+    var tries = 0;
+    function attempt() {
+      return ghGet().then(function (g) {
+        if (!token() || !pending.length) { remote = g.edits; return; }
+        var merged = {}, sent = pending.slice();
+        Object.keys(g.edits).forEach(function (k) { merged[k] = g.edits[k]; });
+        sent.forEach(function (o) { if (o.op === 'set') merged[o.cid] = o.data; else delete merged[o.cid]; });
+        return ghPut(merged, g.sha, commitMessage(sent)).then(function () {
+          remote = merged;
+          pending = pending.filter(function (o) { return sent.indexOf(o) < 0; });
+        }, function (e) {
+          if ((e.status === 409 || e.status === 422) && ++tries < 4) return attempt();
+          throw e;
+        });
+      });
+    }
+    attempt().then(function () { syncErr = ''; }, function (e) {
+      syncErr = !token() ? '' : e && e.status === 401 ? '토큰이 만료되었거나 잘못되었습니다. GitHub 연결을 다시 해 주세요.'
+              : e && e.status === 403 ? 'GitHub가 거절했습니다(토큰 권한 부족 또는 잠시 요청 제한). 잠시 뒤 다시 시도합니다.'
+              : (navigator.onLine === false ? '' : 'GitHub에 연결하지 못했습니다. 잠시 뒤 다시 시도합니다.');
+    }).then(function () {
+      syncing = false; lastPull = Date.now();
+      persist(); rebuild(); renderAll(); runSearch();
+      if (!syncErr && token() && pending.length) sync(); // edits saved while uploading
+    });
+  }
+  function setEdit(cid, data) {
+    pending = pending.filter(function (o) { return o.cid !== cid; });
+    pending.push(data ? { op: 'set', cid: cid, data: data } : { op: 'del', cid: cid });
+    persist(); rebuild(); renderAll(); runSearch();
+    if (token()) sync();
+  }
+  function isApplied(c, e) { return e && c._origText && norm(e.text) === c._origText; }
+  rebuild();
+
+  function sectionName(c) {
+    var n = c.previousElementSibling, sub = '';
+    while (n) {
+      if (!sub && n.tagName === 'H3') sub = norm(n.textContent);
+      if (n.tagName === 'H2') { var k = n.querySelector('.kind'); return norm(k ? k.textContent : '') + ' ' + norm(n.textContent.replace(k ? k.textContent : '', '')) + (sub ? ' > ' + sub : ''); }
+      n = n.previousElementSibling;
+    }
+    return sub;
+  }
+
+  function renderCard(c) {
+    var e = edits[c.dataset.cid], enA = c.querySelector('.a.en-a'), enP = c.querySelector('.en-text');
+    if (isApplied(c, e)) e = null;
+    if (c.classList.contains('editing')) return;
+    if (!enA || !enP) return;
+    var badge = enA.querySelector('.edit-badge'), koNote = c.querySelector('.a:not(.en-a) .edit-note');
+    if (e) {
+      enP.textContent = e.text;
+      c.classList.add('edited');
+      if (!badge) { badge = document.createElement('p'); badge.className = 'edit-badge'; enA.insertBefore(badge, enP); }
+      var stale = c._origText !== norm(e.orig);
+      badge.textContent = '✎ 내가 수정한 답변 · 한국어 답변과 영어 음성은 아직 수정 전 내용입니다' + (stale ? ' (원래 답변도 그사이 바뀌었습니다)' : '');
+      if (!koNote) { var ko = c.querySelector('.a:not(.en-a)'); if (ko) { koNote = document.createElement('p'); koNote.className = 'edit-note'; koNote.textContent = '※ 영어 답변을 수정하기 전의 번역입니다'; ko.appendChild(koNote); } }
+    } else {
+      enP.innerHTML = c._origHTML;
+      c.classList.remove('edited');
+      if (badge) badge.remove();
+      if (koNote) koNote.remove();
+    }
+  }
+
+  function renderAll() { studyPanels.forEach(function (p) { cardsOf(p).forEach(renderCard); }); setStatus(); }
+  function activeEditIds() {
+    return Object.keys(edits).filter(function (id) { var c = document.querySelector('.qa[data-cid="' + id + '"]'); return !(c && isApplied(c, edits[id])); });
+  }
+  function setStatus() {
+    var n = activeEditIds().length, p = pending.length, tok = !!token(), msg;
+    if (!tok) msg = n ? '수정한 영어 답변 ' + n + '개 · 이 기기에만 저장됨 (GitHub 연결하면 모든 기기에 공유)' : '수정한 영어 답변 없음';
+    else if (syncing && p) msg = '수정한 영어 답변 ' + n + '개 · GitHub에 올리는 중…';
+    else if (p) msg = '수정한 영어 답변 ' + n + '개 · GitHub에 아직 안 올라간 수정 ' + p + '개 (연결되면 자동으로 올립니다)';
+    else msg = n ? '수정한 영어 답변 ' + n + '개 · GitHub에 저장됨' : '수정한 영어 답변 없음 · GitHub 연결됨';
+    document.querySelectorAll('.edit-sum-count').forEach(function (el) { el.textContent = msg; });
+    document.querySelectorAll('.edit-err').forEach(function (el) { el.textContent = syncErr; });
+    document.querySelectorAll('.edit-copy, .edit-only').forEach(function (b) { b.disabled = !n; });
+    document.querySelectorAll('.gh-connect').forEach(function (b) { b.hidden = tok; });
+    document.querySelectorAll('.gh-disconnect').forEach(function (b) { b.hidden = !tok; });
+  }
+
+  function openEditor(c) {
+    var enA = c.querySelector('.a.en-a'), enP = c.querySelector('.en-text');
+    if (!enA || !enP || c.querySelector('.edit-box')) return;
+    var box = document.createElement('div'); box.className = 'edit-box';
+    var ta = document.createElement('textarea'); ta.value = norm(enP.textContent); ta.rows = 8; ta.setAttribute('aria-label', '영어 답변 수정');
+    var row = document.createElement('div'); row.className = 'edit-actions';
+    function btn(label, cls, fn) { var b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.className = cls; b.addEventListener('click', fn); row.appendChild(b); return b; }
+    function close() { box.remove(); enP.hidden = false; c.classList.remove('editing'); renderCard(c); }
+    btn('저장', 'edit-save', function () {
+      var t = norm(ta.value);
+      close();
+      if (!t || t === c._origText) setEdit(c.dataset.cid, null);
+      else setEdit(c.dataset.cid, { text: t, orig: c._origText, q: norm(c.querySelector('.q .en').textContent), sec: sectionName(c), tab: c.closest('.panel').id, ts: new Date().toISOString().slice(0, 10) });
+    });
+    btn('취소', 'edit-cancel', close);
+    if (edits[c.dataset.cid] && !isApplied(c, edits[c.dataset.cid])) btn('원래 답변으로 되돌리기', 'edit-reset', function () {
+      if (!confirm('이 카드의 수정을 지우고 원래 답변으로 되돌릴까요?')) return;
+      close(); setEdit(c.dataset.cid, null);
+    });
+    box.appendChild(ta); box.appendChild(row);
+    enP.hidden = true; c.classList.add('editing');
+    enP.parentNode.insertBefore(box, enP.nextSibling);
+    ta.style.height = Math.max(160, ta.scrollHeight + 4) + 'px';
+    ta.focus();
+  }
+
+  studyPanels.forEach(function (p) { cardsOf(p).forEach(function (c) {
+    var enA = c.querySelector('.a.en-a');
+    if (!enA || !c.querySelector('.en-text')) return;
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'edit-btn'; b.textContent = '✎ 수정';
+    b.setAttribute('aria-label', '영어 답변 수정'); b.addEventListener('click', function () { openEditor(c); });
+    enA.appendChild(b);
+    renderCard(c);
+  }); });
+
+  function exportText() {
+    var ids = activeEditIds(), tabName = { answers: '예상답변 IH', im2: '예상답변 IM2' }, out = [];
+    out.push('[OPIc 영어 답변 수정 목록 · ' + new Date().toISOString().slice(0, 10) + ' · ' + ids.length + '개]');
+    out.push('아래 영어 답변 수정에 맞춰 한국어 답변과 영어 음성을 적용해 주세요.');
+    ids.forEach(function (id, i) {
+      var e = edits[id], c = document.querySelector('.qa[data-cid="' + id + '"]');
+      out.push('');
+      out.push((i + 1) + ') ' + (tabName[e.tab] || e.tab) + ' > ' + (c ? sectionName(c) : e.sec || '') + (c ? ' > ' + norm(c.querySelector('.tag').textContent) : ''));
+      out.push('카드 ID: ' + id);
+      out.push('질문: ' + e.q);
+      out.push('원래: ' + e.orig);
+      out.push('수정: ' + e.text);
+    });
+    return out.join('\n');
+  }
+  function showExport(box, text) {
+    var ta = box.querySelector('.edit-export') || box.appendChild(document.createElement('textarea'));
+    ta.className = 'edit-export'; ta.readOnly = true; ta.value = text; ta.hidden = false; ta.rows = 8; ta.select();
+  }
+
+  // ---- search ----
+  var searchOn = false, editedOnly = false, openedBySearch = [];
+  var canHighlight = !!(window.CSS && CSS.highlights && window.Highlight);
+  function textNodes(el) {
+    var w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, { acceptNode: function (n) {
+      var p = n.parentElement; return p && !p.closest('button, textarea, .edit-badge, .edit-note') ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+    } }), out = [], n;
+    while ((n = w.nextNode())) out.push(n);
+    return out;
+  }
+  function runSearch() {
+    var p = activePanel(); if (!p) return;
+    var bar = p.querySelector('.searchbar'), input = bar && bar.querySelector('input');
+    var q = input ? norm(input.value).toLowerCase() : '';
+    openedBySearch.forEach(function (c) { c.classList.remove('open'); }); openedBySearch = [];
+    studyPanels.forEach(function (sp) {
+      sp.classList.remove('search-on');
+      sp.querySelectorAll('.hit, .hit-sec').forEach(function (e) { e.classList.remove('hit', 'hit-sec'); });
+    });
+    if (canHighlight) CSS.highlights.delete('opic-search');
+    var countEl = bar && bar.querySelector('.search-count');
+    if (!q && !editedOnly) { if (countEl) countEl.textContent = ''; measure(); return; }
+    var ranges = [], cards = 0, hits = 0, lastH2 = null, lastH3 = null;
+    Array.prototype.forEach.call(p.children, function (el) {
+      if (el.tagName === 'H2') { lastH2 = el; lastH3 = null; return; }
+      if (el.tagName === 'H3') { lastH3 = el; return; }
+      if (!el.classList.contains('qa')) return;
+      var ok = editedOnly ? el.classList.contains('edited') : true, found = 0;
+      if (ok && q) {
+        textNodes(el).forEach(function (n) {
+          var t = n.nodeValue.toLowerCase(), i = t.indexOf(q);
+          while (i !== -1) { found++; if (canHighlight) { var r = new Range(); r.setStart(n, i); r.setEnd(n, i + q.length); ranges.push(r); } i = t.indexOf(q, i + q.length); }
+        });
+        ok = found > 0;
+      }
+      if (!ok) return;
+      cards++; hits += found;
+      el.classList.add('hit');
+      if (lastH2) lastH2.classList.add('hit-sec');
+      if (lastH3) lastH3.classList.add('hit-sec');
+      if (!el.classList.contains('open')) { el.classList.add('open'); openedBySearch.push(el); }
+    });
+    p.classList.add('search-on');
+    if (canHighlight && ranges.length) CSS.highlights.set('opic-search', new Highlight(ranges));
+    if (countEl) countEl.textContent = cards ? ('카드 ' + cards + '개' + (q ? ' · ' + hits + '곳' : '')) : '찾는 내용이 없습니다';
+    measure();
+  }
+  var searchTimer = null;
+  document.querySelectorAll('.searchbar input').forEach(function (inp) {
+    inp.addEventListener('input', function () {
+      document.querySelectorAll('.searchbar input').forEach(function (o) { if (o !== inp) o.value = inp.value; });
+      clearTimeout(searchTimer); searchTimer = setTimeout(function () { runSearch(); window.scrollTo({ top: 0 }); }, 200);
+    });
+  });
+  function setEditedOnly(on) {
+    editedOnly = on;
+    document.querySelectorAll('.edit-only').forEach(function (b) { b.setAttribute('aria-pressed', String(on)); b.textContent = on ? '전체 보기' : '수정한 것만 보기'; });
+    runSearch(); window.scrollTo({ top: 0 });
+  }
+  document.querySelectorAll('.search-clear').forEach(function (b) { b.addEventListener('click', function () {
+    document.querySelectorAll('.searchbar input').forEach(function (o) { o.value = ''; });
+    editedOnly = false; setEditedOnly(false);
+  }); });
+  document.querySelectorAll('.search-toggle').forEach(function (b) { b.addEventListener('click', function () {
+    var open = !b.closest('.toolbar').classList.contains('search-open');
+    toolbars.forEach(function (t) { t.classList.toggle('search-open', open); });
+    document.querySelectorAll('.search-toggle').forEach(function (x) { x.setAttribute('aria-expanded', String(open)); });
+    measure();
+    if (open) { var inp = b.closest('.toolbar').querySelector('.searchbar input'); if (inp) inp.focus(); }
+  }); });
+  document.querySelectorAll('.edit-only').forEach(function (b) { b.addEventListener('click', function () {
+    toolbars.forEach(function (t) { t.classList.add('search-open'); });
+    setEditedOnly(!editedOnly);
+  }); });
+  document.querySelectorAll('.edit-copy').forEach(function (b) { b.addEventListener('click', function () {
+    var text = exportText(), box = b.closest('.edit-sum'), msg = box.querySelector('.edit-msg');
+    function done(ok) { msg.textContent = ok ? '복사했습니다. Claude에게 붙여 넣어 "한국어 답변과 음성 적용해 줘"라고 보내 주세요.' : '자동 복사가 안 되어 아래에 표시했습니다. 길게 눌러 전체 선택 후 복사하세요.'; if (!ok) showExport(box, text); }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); });
+    else done(false);
+  }); });
+  tabs.forEach(function (t) { t.addEventListener('click', function () { setTimeout(runSearch, 0); }); });
+  // GitHub connection (token is kept only in this browser)
+  function ghBox(el) { return el.closest('.edit-sum'); }
+  document.querySelectorAll('.gh-connect').forEach(function (b) { b.addEventListener('click', function () { var f = ghBox(b).querySelector('.gh-form'); f.hidden = !f.hidden; if (!f.hidden) f.querySelector('input').focus(); }); });
+  document.querySelectorAll('.gh-cancel').forEach(function (b) { b.addEventListener('click', function () { ghBox(b).querySelector('.gh-form').hidden = true; }); });
+  document.querySelectorAll('.gh-save').forEach(function (b) { b.addEventListener('click', function () {
+    var box = ghBox(b), inp = box.querySelector('.gh-form input'), t = inp.value.trim(), msg = box.querySelector('.edit-msg');
+    if (!t) return;
+    msg.textContent = '토큰 확인 중…';
+    fetch('https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO, { headers: ghHeaders(t), cache: 'no-store' }).then(function (r) {
+      if (!r.ok) throw { status: r.status }; return r.json();
+    }).then(function (j) {
+      if (!j.permissions || !j.permissions.push) throw { status: 403 };
+      store.set(K_TOKEN, t); inp.value = '';
+      document.querySelectorAll('.gh-form').forEach(function (f) { f.hidden = true; });
+      document.querySelectorAll('.edit-msg').forEach(function (m) { m.textContent = 'GitHub에 연결했습니다. 이 기기에서 저장하는 수정은 모든 기기에 공유됩니다.'; });
+      sync();
+    }, function (e) {
+      msg.textContent = e && e.status === 403 ? '이 토큰에는 opic-notes 저장소 쓰기 권한이 없습니다. 아래 방법대로 Contents를 Read and write로 주세요.' : '토큰을 확인하지 못했습니다. 다시 복사해 붙여 넣어 주세요.';
+    });
+  }); });
+  document.querySelectorAll('.gh-disconnect').forEach(function (b) { b.addEventListener('click', function () {
+    if (!confirm('이 기기의 GitHub 연결을 해제할까요? 이미 GitHub에 올라간 수정은 그대로 남습니다.')) return;
+    store.set(K_TOKEN, ''); document.querySelectorAll('.edit-msg').forEach(function (m) { m.textContent = ''; }); setStatus();
+  }); });
+  renderAll();
+  sync(); // pull edits saved on other devices, and upload anything left from before
+  window.addEventListener('online', function () { sync(); });
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && Date.now() - lastPull > 60000) sync(); });
 })();
 </script>
 </body>
