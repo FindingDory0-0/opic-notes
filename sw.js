@@ -7,7 +7,7 @@
  * - Google Fonts: cached the first time they are used, so the page keeps its typefaces offline.
  * No persistent-storage request: if the browser clears the cache, clips are fetched again on play.
  */
-const SHELL = 'opic-notes-shell-v7'; // v7: Busan answers aligned with the staycation story
+const SHELL = 'opic-notes-shell-v8'; // v8: reused IM2 answers now use the source sentences verbatim
 const AUDIO = 'opic-notes-audio';      // unversioned on purpose: survives app updates
 const FONTS = 'opic-notes-fonts-v1';
 const KEEP = [SHELL, AUDIO, FONTS];
