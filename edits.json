@@ -1,13 +1,4 @@
 {
  "note": "OPIc 노트 페이지에서 고친 영어 답변. 한국어 답변과 음성을 적용하면 해당 항목을 지웁니다.",
- "edits": {
-  "im2:t8caf3:1": {
-   "text": "Yes. Last summer, I planned to go to Busan with my friend. We booked train tickets and a guesthouse. But two days before the trip, my friend got sick. It was a bad cold. So we canceled everything. I got my money back for the train tickets. I was sad, but I stayed home and relaxed for a week. My friend bought me dinner later. Now I always check the cancellation rules first.",
-   "orig": "Yes. Last summer, I planned a trip to Busan with my friend. We booked train tickets and a guesthouse. But two days before the trip, my friend got sick. It was a bad cold. So we canceled everything. I got my money back for the train tickets. I was sad, but I stayed home and relaxed for a week. My friend bought me dinner later. Now I always check the cancellation rules first.",
-   "q": "That's the end of the situation. Have you ever had to cancel a plan? Tell me what happened and what you did.",
-   "sec": "12 · 11~13번 · 반드시 나옵니다 상황극 (롤플레이) > 세트 3 · 친구와의 약속 · 아파서 못 가는 상황",
-   "tab": "im2",
-   "ts": "2026-10-05"
-  }
- }
+ "edits": {}
 }
