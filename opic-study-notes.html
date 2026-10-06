@@ -20,7 +20,7 @@
   :root {
     --bg: #F4F6F8; --surface: #FFFFFF; --ink: #1A2430; --ink-2: #4A5563; --muted: #7A8594;
     --line: #DCE2E8; --accent: #176B63; --accent-soft: #E1F0EC; --warn: #A8601A; --warn-soft: #F8EBDD;
-    --en-bg: #F2F5F8; --link: #1D5A8A; --bar: rgba(244,246,248,.86);
+    --en-bg: #F2F5F8; --link: #1D5A8A; --bar: rgba(244,246,248,.86); --hl: #FFE86B;
     --font-display: "Nanum Myeongjo", "Apple SD Gothic Neo", serif;
     --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
     --font-mono: "IBM Plex Mono", "SF Mono", Menlo, monospace;
@@ -29,13 +29,13 @@
     :root:not([data-theme="light"]) {
       --bg: #121820; --surface: #1A222C; --ink: #E8EDF2; --ink-2: #B7C1CC; --muted: #8593A2;
       --line: #2C3742; --accent: #5FC1B2; --accent-soft: #1B3532; --warn: #E0A35A; --warn-soft: #3A2C1C;
-      --en-bg: #151C25; --link: #7FB6E6; --bar: rgba(18,24,32,.86);
+      --en-bg: #151C25; --link: #7FB6E6; --bar: rgba(18,24,32,.86); --hl: #8A7A1F;
     }
   }
   :root[data-theme="dark"] {
     --bg: #121820; --surface: #1A222C; --ink: #E8EDF2; --ink-2: #B7C1CC; --muted: #8593A2;
     --line: #2C3742; --accent: #5FC1B2; --accent-soft: #1B3532; --warn: #E0A35A; --warn-soft: #3A2C1C;
-    --en-bg: #151C25; --link: #7FB6E6; --bar: rgba(18,24,32,.86);
+    --en-bg: #151C25; --link: #7FB6E6; --bar: rgba(18,24,32,.86); --hl: #8A7A1F;
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
@@ -209,6 +209,8 @@
   .toolbar.search-open .searchbar { display: flex; }
   .searchbar input { flex: 1 1 220px; min-width: 0; font: inherit; font-size: 15px; padding: 7px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); }
   .searchbar input:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: var(--accent); }
+  /* search hits */
+  mark.hit-mark { background: var(--hl); color: var(--ink); padding: 0 2px; border-radius: 3px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
   .search-count { font-size: 13px; color: var(--ink-2); white-space: nowrap; }
   .search-clear, .edit-sum button { appearance: none; font: inherit; font-size: 12.5px; color: var(--ink-2); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 5px 10px; cursor: pointer; }
   .edit-sum button:disabled { opacity: .4; cursor: default; }
@@ -3210,7 +3212,32 @@
 
   // ---- search ----
   var searchOn = false, editedOnly = false, openedBySearch = [];
-  var canHighlight = !!(window.CSS && CSS.highlights && window.Highlight);
+  // matches are wrapped in <mark> elements so every browser shows them (the Highlight API is not drawn everywhere)
+  function markMatches(n, q) {
+    var t = n.nodeValue, lower = t.toLowerCase(), i = lower.indexOf(q), count = 0;
+    if (i === -1) return 0;
+    var frag = document.createDocumentFragment(), last = 0;
+    while (i !== -1) {
+      if (i > last) frag.appendChild(document.createTextNode(t.slice(last, i)));
+      var m = document.createElement('mark'); m.className = 'hit-mark'; m.textContent = t.slice(i, i + q.length); frag.appendChild(m);
+      count++; last = i + q.length; i = lower.indexOf(q, last);
+    }
+    if (last < t.length) frag.appendChild(document.createTextNode(t.slice(last)));
+    n.parentNode.replaceChild(frag, n);
+    return count;
+  }
+  function unmarkAll() {
+    document.querySelectorAll('mark.hit-mark').forEach(function (m) {
+      var par = m.parentNode; if (!par) return;
+      par.replaceChild(document.createTextNode(m.textContent), m); par.normalize();
+    });
+  }
+  function scrollToFirstHit() {
+    var p = activePanel(), first = p && p.querySelector('.qa.hit');
+    if (!first) { window.scrollTo({ top: 0 }); return; }
+    var t = activeToolbar(), off = appbar.offsetHeight + (t ? t.offsetHeight : 0) + 12;
+    window.scrollTo({ top: first.getBoundingClientRect().top + window.scrollY - off });
+  }
   function textNodes(el) {
     var w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, { acceptNode: function (n) {
       var p = n.parentElement; return p && !p.closest('button, textarea, .edit-badge, .edit-note') ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
@@ -3227,20 +3254,17 @@
       sp.classList.remove('search-on');
       sp.querySelectorAll('.hit, .hit-sec').forEach(function (e) { e.classList.remove('hit', 'hit-sec'); });
     });
-    if (canHighlight) CSS.highlights.delete('opic-search');
+    unmarkAll();
     var countEl = bar && bar.querySelector('.search-count');
     if (!q && !editedOnly) { if (countEl) countEl.textContent = ''; measure(); return; }
-    var ranges = [], cards = 0, hits = 0, lastH2 = null, lastH3 = null;
+    var cards = 0, hits = 0, lastH2 = null, lastH3 = null;
     Array.prototype.forEach.call(p.children, function (el) {
       if (el.tagName === 'H2') { lastH2 = el; lastH3 = null; return; }
       if (el.tagName === 'H3') { lastH3 = el; return; }
       if (!el.classList.contains('qa')) return;
       var ok = editedOnly ? el.classList.contains('edited') : true, found = 0;
       if (ok && q) {
-        textNodes(el).forEach(function (n) {
-          var t = n.nodeValue.toLowerCase(), i = t.indexOf(q);
-          while (i !== -1) { found++; if (canHighlight) { var r = new Range(); r.setStart(n, i); r.setEnd(n, i + q.length); ranges.push(r); } i = t.indexOf(q, i + q.length); }
-        });
+        textNodes(el).forEach(function (n) { found += markMatches(n, q); });
         ok = found > 0;
       }
       if (!ok) return;
@@ -3251,7 +3275,6 @@
       if (!el.classList.contains('open')) { el.classList.add('open'); openedBySearch.push(el); }
     });
     p.classList.add('search-on');
-    if (canHighlight && ranges.length) CSS.highlights.set('opic-search', new Highlight(ranges));
     if (countEl) countEl.textContent = cards ? ('카드 ' + cards + '개' + (q ? ' · ' + hits + '곳' : '')) : '찾는 내용이 없습니다';
     measure();
   }
@@ -3259,7 +3282,7 @@
   document.querySelectorAll('.searchbar input').forEach(function (inp) {
     inp.addEventListener('input', function () {
       document.querySelectorAll('.searchbar input').forEach(function (o) { if (o !== inp) o.value = inp.value; });
-      clearTimeout(searchTimer); searchTimer = setTimeout(function () { runSearch(); window.scrollTo({ top: 0 }); }, 200);
+      clearTimeout(searchTimer); searchTimer = setTimeout(function () { runSearch(); scrollToFirstHit(); }, 200);
     });
   });
   function setEditedOnly(on) {
